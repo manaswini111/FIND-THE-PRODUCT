@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopkeeper Interface</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: url('/') no-repeat center center / cover;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    #productForm {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    #productForm label {
+      margin-right: 5px;
+    }
+    #productForm input {
+      margin-right: 20px;
+    }
+    table {
+        width: 70%;
+        border-collapse: collapse;
+        margin: 25px auto;
+        font-size: 18px;
+        text-align: left;
+    }
+    th, td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background-color:rgb(61, 61, 236);
+    }
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+    img.circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    button {
+        padding: 5px 10px;
+        margin: 2px;
+        color: rgb(245, 245, 249);
+        background-color: blue;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome Shopkeeper</h1>
+  <form id="productForm" action="/products" method="POST" enctype="multipart/form-data">
+    <label for="productName">Product Name:</label>
+    <input type="text" id="productName" name="productName" required>
+    <label for="productCount">Product Count:</label>
+    <input type="number" id="productCount" name="productCount" required>
+    <label for="productImage">Product Image:</label>
+    <input type="file" id="productImage" name="productImage" required>
+    <button type="button" id="btn" onclick="addProduct()">Add</button>
+  </form>
+
+  <h2>Product Data Table</h2>
+  <table id="productTable">
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Product Count</th>
+        <th>Product Image</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Dynamic product rows will be added here -->
+    </tbody>
+  </table>
+
+  <script>
+    function addProduct() {
+      const productName = document.getElementById('productName').value;
+      const productCount = document.getElementById('productCount').value;
+      const productImage = document.getElementById('productImage').files[0];
+
+      // Creating a new row
+      const tr = document.createElement('tr');
+
+      // Adding product name cell
+      const td1 = tr.appendChild(document.createElement('td'));
+      td1.innerText = productName;
+
+      // Adding product count cell
+      const td2 = tr.appendChild(document.createElement('td'));
+      td2.innerText = productCount;
+
+      // Adding product image cell
+      const td3 = tr.appendChild(document.createElement('td'));
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(productImage);
+      img.className = 'circle';
+      td3.appendChild(img);
+
+      // Adding actions cell
+      const td4 = tr.appendChild(document.createElement('td'));
+      td4.innerHTML = `
+        <button onclick="deleteProduct(this)" class="btn btn-danger">Delete</button>
+        <button onclick="editProduct(this)" class="btn btn-primary">Edit</button>
+      `;
+
+      document.querySelector('#productTable tbody').appendChild(tr);
+      
+      // Optional: Send the product data to the server
+      sendProductToServer(productName, productCount, productImage);
+    }
+
+    function deleteProduct(button) {
+      const row = button.parentNode.parentNode;
+      row.parentNode.removeChild(row);
+    }
+
+    function editProduct(button) {
+      const row = button.parentNode.parentNode;
+      const productName = row.cells[0].innerText;
+      const productCount = row.cells[1].innerText;
+
+      document.getElementById('productName').value = productName;
+      document.getElementById('productCount').value = productCount;
+
+      // Update the add button to an update button
+      const addButton = document.querySelector('form button');
+      addButton.innerText = 'Update Product';
+      addButton.onclick = function() {
+        updateProduct(row);
+      };
+    }
+
+    function updateProduct(row) {
+      const productName = document.getElementById('productName').value;
+      const productCount = document.getElementById('productCount').value;
+
+      row.cells[0].innerText = productName;
+      row.cells[1].innerText = productCount;
+
+      // Reset the form and button
+      document.getElementById('productForm').reset();
+      const addButton = document.querySelector('form button');
+      addButton.innerText = 'Add Product';
+      addButton.onclick = addProduct;
+    }
+
+    // Optional: Function to send product data to the server
+    async function sendProductToServer(productName, productCount, productImage) {
+      const formData = new FormData();
+      formData.append('productName', productName);
+      formData.append('productCount', productCount);
+      formData.append('productImage', productImage);
+
+      const response = await fetch('/products', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        console.error('Failed to add product');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop Locator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url('/localgoods.jpeg') no-repeat center center / cover;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #004080;
+}
+
+#shopList {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#shopList ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#shopList ul li {
+    margin-bottom: 5px;
+}
+
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.nav-buttons button {
+    width: 48%;
+    background-color: #0056b3;
+    color: white;
+    padding: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.nav-buttons button:hover {
+    background-color: #004080;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="nav-buttons">
+        <button id="localGoodsButton">Local Goods</button>
+        <button id="medicinesButton">Medicines</button>
+    </div>
+    
+    <h1>Find The Product</h1>
+    <form id="shopLocatorForm">
+        <div class="form-group">
+            <label for="product">Product:</label>
+            <input type="text" id="product" name="product" required>
+        </div>
+        <div class="form-group">
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" required>
+        </div>
+        <button type="submit">Find</button>
+    </form>
+    <div id="shopList"></div>
+</div>
+<script>
+const shops = [
+    {
+        "name": "Lakshmi Narayana provision stores",
+        "location": "G-18, Laxminarayan Chambers, Novino Tarsali Rd, Opposite New Era School, Bhakti Nagar, Makarpura, Vadodara, Gujarat 390010",
+        "products": [
+            "Santoor soaps", "kurkure", "Lays", "Freedom Refined Sunflower Oil", "Flax Seeds 1Kg", "Sunflower Seeds 250g", 
+            "Rice (Basmati)", "Wheat Flour", "sugar", "tur dal", "ghee", "Milk", "Bread", "Spices (Turmeric)", 
+            "Spices (Chili)", "Soap", "Shampoo", "Toothpaste", "Detergent Powder", "Dishwash Bar", "Biscuits (Marie)", 
+            "Toilet Cleaner", "Floor Cleaner", "Face Wash", "Hair Oil", "Coconut Oil", "Mustard Oil", "Noodles", 
+            "Ketchup", "Mayonnaise", "Pickle", "Jam", "Cornflakes", "Oats", "Rava (Semolina)", "Vermicelli", 
+            "Pasta", "Green Gram", "Black Gram", "Detergent Bar", "Tissues", "Paper Napkins", "Aluminum Foil", 
+            "Cling Film", "Garbage Bags", "Diapers", "Baby Powder", "Sanitary Pads", "Handwash"
+        ]
+    },
+   
+    {
+        "name": "PRASAD KIRANA SHOP",
+        "location": "Rd Number 6, Old Vadlapudi, Gajuwaka, Visakhapatnam, Andhra Pradesh 530046",
+        "products": [
+            "Rice", "Lays", "Wheat flour", "Lentils (Dal)", "Spices", "Cooking oils", "salt", "sugar", 
+            "tea", "Coffee", "Milk"
+        ]
+    },
+    {
+        "name": "Sri Vigneshwara Kirana and General Store",
+        "location": "P538+442, Vuda Colony, Kurmannapalem, Visakhapatnam, Andhra Pradesh 530046",
+        "products": [
+            "Mustard Oil", "Noodles", "Ketchup", "Mayonnaise", "Pickle", "Jam", "Cornflakes", "Oats", "Rava (Semolina)", 
+            "Vermicelli", "Pasta", "Green Gram", "Black Gram", "DetergentBar","Lays", "Tissues", "Paper Napkins", 
+            "Aluminum Foil", "Cling Film", "Garbage Bags"
+        ]
+    },
+    {
+        "name": "K K KIRANA AND GENERAL STORE",
+        "location": "30-47-9, Kanithi R H Colony, Kurmannapalem, Visakhapatnam, Andhra Pradesh 530046",
+        "products": [
+            "Santoor soaps", "kurkure", "Lays", "Freedom Refined Sunflower Oil", "Flax Seeds 1Kg", "Sunflower Seeds 250g", 
+            "Rice (Basmati)", "Wheat Flour", "sugar", "tur dal", "ghee", "Milk", "Bread", "Spices (Turmeric)", 
+            "Spices (Chili)", "Soap", "Shampoo", "Toothpaste", "Detergent Powder", "Dishwash Bar", "Biscuits (Marie)", 
+            "Toilet Cleaner", "Floor Cleaner", "Face Wash", "Hair Oil"
+        ]
+    }
+];
+</script>
+
+<script>
+document.getElementById('shopLocatorForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    let productInput = document.getElementById('product').value.trim().toLowerCase();
+    let locationInput = document.getElementById('location').value.trim().toLowerCase();
+
+    let matchedShops = shops.filter(shop => {
+        return locationInput.split(' ').every(locationKeyword => shop.location.toLowerCase().includes(locationKeyword)) && 
+               productInput.split(' ').some(productKeyword => shop.products.map(p => p.toLowerCase()).some(p => p.includes(productKeyword)));
+    });
+
+    let shopListDiv = document.getElementById('shopList');
+    shopListDiv.innerHTML = '<h2>Available Shops</h2>';
+
+    if (matchedShops.length > 0) {
+        let ul = document.createElement('ul');
+        matchedShops.forEach(shop => {
+            let li = document.createElement('li');
+            li.textContent = `${shop.name} - ${shop.location}`;
+            ul.appendChild(li);
+        });
+        shopListDiv.appendChild(ul);
+    } else {
+        shopListDiv.innerHTML += '<p>No shops found for the given product and location.</p>';
+    }
+});
+
+document.getElementById('localGoodsButton').addEventListener('click', function() {
+    window.location.href = '/userInterface';
+});
+
+document.getElementById('medicinesButton').addEventListener('click', function() {
+    window.location.href = '/userInterface1';
+});
+</script>
+</body>
+</html>

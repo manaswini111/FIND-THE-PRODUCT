@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop Locator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url('/medicines.jpg') no-repeat center center / cover;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #004080;
+}
+
+#shopList {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.shop-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+}
+
+.shop-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.nav-buttons button {
+    width: 48%;
+    background-color: #0056b3;
+    color: white;
+    padding: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.nav-buttons button:hover {
+    background-color: #004080;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="nav-buttons">
+        <button id="localGoodsButton">Local Goods</button>
+        <button id="medicinesButton">Medicines</button>
+    </div>
+    
+    <h1>Find The Medicines</h1>
+    <form id="shopLocatorForm">
+        <div class="form-group">
+            <label for="product">Product:</label>
+            <input type="text" id="product" name="product" required>
+        </div>
+        <div class="form-group">
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" required>
+        </div>
+        <button type="submit">Find</button>
+    </form>
+    <div id="shopList"></div>
+</div>
+
+<script>
+// Simulate fetching data from a backend or API based on product and location
+// Here, we assume some sample data for demonstration
+let shops = [
+    { 
+        name: 'Apollo Pharmacy',
+        location: 'Door No 13/6/14/ 3 & 4, Ramanachari Cplx, BC Rd, New Gajuwaka, Visakhapatnam, Andhra Pradesh 530026',
+        products: [
+            'Paracetamol (Acetaminophen)', 'Ibuprofen (NSAID)', 'Aspirin (Acetylsalicylic acid)', 
+            'Antacids', 'Loperamide (Imodium)', 'Cetirizine', 'Ranitidine', 'Hydrocortisone cream', 
+            'Antiseptic solution', 'Cough syrup', 'Diphenhydramine (Benadryl)', 'Esomeprazole (Nexium)', 
+            'Simethicone', 'Saline nasal spray', 'Hydrogen peroxide', 'Calamine lotion', 'Bacitracin or Neosporin', 
+            'Oral rehydration salts (ORS)', 'Glycerin suppositories', 'Multivitamins'
+        ] 
+    },
+    { 
+        name: 'Satya Durga Medicals Homoeopathy and Ayurvedic Medical Shop', 
+        location: '8-11-5/1, NH-16 Road, beside LATA HOSPITAL, near Old Gajuwaka Junction, Visakhapatnam, Andhra Pradesh 530026',
+        products: [
+            'Chlorpheniramine', 'Glyceryl trinitrate (GTN)', 'Lidocaine gel or cream', 'Methenamine', 
+            'Phenazopyridine', 'Terbinafine', 'Calcipotriene', 'Nitrofurantoin', 'Nystatin', 'Sucralfate', 
+            'Desloratadine', 'Mefenamic acid', 'Fluconazole', 'Amoxicillin', 'Mometasone', 'Dexamethasone', 
+            'Ondansetron', 'Levocetirizine', 'Melatonin', 'Metronidazole'
+        ] 
+    },
+    { 
+        name: 'Sri Vignesh Medical Store', 
+        location: 'Sri Vignesh Medical Store, Sri Nagar Main Rd, opp. Ramalayam Arch, Sri Nagar, Gajuwaka, Visakhapatnam, Andhra Pradesh 530026',
+        products: [
+            'Sildenafil (Viagra)', 'Esomeprazole (Nexium)', 'Hyoscine (Scopolamine)', 'Duloxetine', 
+            'Risperidone', 'Warfarin', 'Digoxin', 'Allopurinol', 'Terazosin', 'Budesonide', 'Atorvastatin', 
+            'Citalopram', 'Fluticasone', 'Metformin', 'Lisinopril', 'Tramadol', 'Pantoprazole', 'Fluoxetine', 
+            'Hydrochlorothiazide', 'Methylprednisolone'
+        ]
+    },
+    { 
+        name: 'RAJESWARI MEDICAL & GENERAL STORE', 
+        location: 'near Ramachandra Institute, Samatha Nagar, Gajuwaka, Visakhapatnam, Andhra Pradesh 530044',
+        products: [
+            'Gabapentin', 'Amitriptyline', 'Quetiapine', 'Baclofen', 'Celecoxib', 'Desmopressin', 'Memantine', 
+            'Tamsulosin', 'Topiramate', 'Brimonidine', 'Pegloticase', 'Plerixafor colony stimulating factor', 
+            'Anakinra', 'Icatibant', 'Rituximab', 'Pomalyst (Pomalidomide)', 'Voriconazole', 'Methotrexate', 
+            'Natalizumab', 'Alemtuzumab'
+        ]
+    },
+    { 
+        name: 'Sai Shri Ganapathi Medicals And General Stores', 
+        location: 'D. No. 26-37-21, Towards Goutam Budha Grandalaym, Old Gajuwaka, Chaitanya Nagar, Gajuwaka, Visakhapatnam, Andhra Pradesh 530026',
+        products: [
+            'Idursulfase', 'Epoprostenol', 'Vismodegib', 'Medulloblastoma', 'Colchicine', 'Dantrolene', 
+            'Sodium oxybate', 'Lomitapide', 'Pentoxifylline', 'Vorinostat', 'Pimavanserin', 'Emapalumab', 
+            'Tafamidis', 'Teduglutide', 'Metyrosine', 'Eteplirsen', 'Migalastat', 'Elagolix', 'Mazindol', 
+            'Mitoxantrone', 'Cyclosporine'
+        ] 
+    },
+    {
+        name: 'Sri Venkata Priya Medical',
+        location: 'M5RF+882, Kanithi R H Colony, Kurmannapalem, Visakhapatnam, Andhra Pradesh 530046',
+        products: [
+            'Levothyroxine', 'Metoprolol', 'Amlodipine', 'Losartan', 'Clopidogrel', 'Ciprofloxacin', 
+            'Azithromycin', 'Clindamycin', 'Prednisone', 'Albuterol', 'Amiodarone', 'Digoxin', 
+            'Hydralazine', 'Nitroglycerin', 'Simvastatin', 'paracetemol','Rosuvastatin', 'Carvedilol', 'Valsartan', 
+            'Lisinopril', 'Hydrochlorothiazide'
+        ]
+    },
+    { 
+        name: 'Shree Vaishnavi Medicals (Generic Medical)', 
+        location: 'Y-Junction, Old Gajuwaka, Pedagantyada, Visakhapatnam, Andhra Pradesh 530026',
+        products: [
+            'Propranolol', 'Diazepam', 'Lamotrigine', 'Zonisamide', 'Tiagabine', 'Levetiracetam', 
+            'Lacosamide', 'Rufinamide', 'Ezogabine', 'Eslicarbazepine acetate', 'Vigabatrin', 
+            'Felbamate', 'Ethosuximide', 'Primidone', 'Carbamazepine', 'Valproate', 'Clonazepam', 
+            'Midazolam', 'Lorazepam', 'Gabapentin'
+        ] 
+    },
+    {
+        name: 'JK MEDICALS AND GENERAL STORE',
+        location: 'Shop Number 6, PM Palem, Sector 11 MVP Colony, Visakhapatnam, Andhra Pradesh 530017',
+        products: [
+            'Ferrous sulfate', 'Folic acid', 'Iron dextran', 'Sodium ferric gluconate', 'Iron sucrose', 
+            'Ferric carboxymaltose', 'Ferumoxytol', 'Ferric derisomaltose', 'Iron isomaltoside', 
+            'Ferric pyrophosphate citrate', 'Ferric citrate', 'Polysaccharide-iron complex', 
+            'Iron protein succinylate', 'Heme iron polypeptide', 'Carbonyl iron', 'Iron amino acid chelate', 
+            'Iron bisglycinate', 'Iron glycine sulfate', 'Iron (III)-hydroxide polymaltose complex', 
+            'Iron polymaltose'
+        ]
+    }
+];
+
+// Function to simulate finding shops based on the product and location
+function findShops(product, location) {
+    return shops.filter(shop => 
+        shop.products.includes(product) && shop.location.toLowerCase().includes(location.toLowerCase())
+    );
+}
+
+// Handle form submission
+document.getElementById('shopLocatorForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const product = document.getElementById('product').value;
+    const location = document.getElementById('location').value;
+
+    const results = findShops(product, location);
+    const shopList = document.getElementById('shopList');
+    shopList.innerHTML = '';
+
+    if (results.length > 0) {
+        results.forEach(shop => {
+            const shopItem = document.createElement('div');
+            shopItem.className = 'shop-item';
+
+            const shopName = document.createElement('div');
+            shopName.className = 'shop-name';
+            shopName.textContent = shop.name;
+
+            const shopLocation = document.createElement('div');
+            shopLocation.textContent = shop.location;
+
+            shopItem.appendChild(shopName);
+            shopItem.appendChild(shopLocation);
+            shopList.appendChild(shopItem);
+        });
+    } else {
+        shopList.textContent = 'No shops found with the specified product and location.';
+    }
+});
+
+// Navigation buttons event listeners
+document.getElementById('localGoodsButton').addEventListener('click', function() {
+    window.location.href = '/userInterface';
+});
+
+document.getElementById('medicinesButton').addEventListener('click', function() {
+    window.location.href = '/userInterface1';
+});
+</script>
+</body>
+</html>
